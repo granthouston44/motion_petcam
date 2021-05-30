@@ -1,10 +1,9 @@
 FROM debian
 
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get install -y wget
-RUN apt-get install -y motion
-RUN apt-get install -y nano
+RUN apt-get update && apt-get -y upgrade \
+apt-get install -y wget \ 
+apt-get install -y motion \
+apt-get install -y nano
 
 
 RUN sed -i -r "s/start_motion_daemon=yes/start_motion_daemon=no/g" /etc/default/motion
