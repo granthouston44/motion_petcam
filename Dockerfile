@@ -28,6 +28,9 @@ ARG password
 
 RUN sed -i -r -e "s/daemon\\ off/daemon\\ on/g ; s/;logfile/logfile/g ; s/width\\ 320/width\\ 1024/g ; s/height\\ 240/height\\ 768/g ; s/webcontrol_port\\ 0/webcontrol_port\\ 8081/g ; s/;\\ webcontrol_authentication\\ username:password/webcontrol_authentication\\ ${username}:${password}/g"  /etc/motion/motion.conf
 
+CMD tail -f /dev/null
+
+
 #v4l2-ctl --list-devices
 
 # TODO::
