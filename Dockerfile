@@ -4,7 +4,10 @@ FROM debian as base-image
 
 # TODO::create motion user to run motion
 
-RUN mkdir -p /var/lib/noip
+RUN apt-get -y update \
+&& apt-get install -y wget \
+&& mkdir -p /var/lib/noip
+
 WORKDIR /var/lib/noip/
 RUN wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz && \
     mkdir noip_ && tar xfvz noip-duc-linux.tar.gz -C noip_ --strip-components 1 \
@@ -14,7 +17,7 @@ FROM debian as build
 
 COPY --from=base-image /var/lib/noip/noip_ /var/lib/noip/noip_
 
-RUN apt-get install -y wget \
+RUN apt-get -y update \
 && apt-get install -y motion \
 && apt-get install -y nano \
 && apt-get install -y make \
@@ -28,5 +31,6 @@ RUN sed -i -r -e "s/daemon\\ off/daemon\\ on/g ; s/;logfile/logfile/g ; s/width\
 #v4l2-ctl --list-devices
 
 # TODO::
+
 # Find a way to keep the docker container running with both noip and motion processes
 # Find a way to pass usb device in either using privilege or device flags
