@@ -1,4 +1,4 @@
-FROM debian as base-image
+FROM raspbian/stretch as base-image
 
 #RUN sed -i -r "s/start_motion_daemon=yes/start_motion_daemon=yes/g" /etc/default/motion
 
@@ -13,7 +13,7 @@ RUN wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz && \
     mkdir noip_ && tar xfvz noip-duc-linux.tar.gz -C noip_ --strip-components 1 \
     && echo '/usr/local/bin/noip2' >> /etc/rc.local
 
-FROM debian as build
+FROM raspbian/stretch as build
 
 COPY --from=base-image /var/lib/noip/noip_ /var/lib/noip/noip_
 
