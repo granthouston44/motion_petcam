@@ -1,39 +1,26 @@
-FROM raspbian/stretch as base-image
+FROM raspbian/stretch:latest as base-image
 
-#RUN sed -i -r "s/start_motion_daemon=yes/start_motion_daemon=yes/g" /etc/default/motion
-
-# TODO::create motion user to run motion
-
-RUN apt-get -y update \
-&& apt-get install -y wget \
+RUN apt-get -y update && apt-get -y install motion && apt-get -y install make && apt-get -y install gcc \
 && mkdir -p /var/lib/noip
 
 WORKDIR /var/lib/noip/
 RUN wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz && \
     mkdir noip_ && tar xfvz noip-duc-linux.tar.gz -C noip_ --strip-components 1 \
-    && echo '/usr/local/bin/noip2' >> /etc/rc.local
+    && echo '/usr/local/bin/noip2' >> /etc/rc.local \
+    && cd ./noip_ make install
 
-FROM raspbian/stretch as build
+# TODO::
+# Find way to run 'make install' and pass values into the prompt
 
-COPY --from=base-image /var/lib/noip/noip_ /var/lib/noip/noip_
+COPY motion.conf /etc/motion/motion.conf
 
-RUN apt-get -y update \
-&& apt-get install -y motion \
-&& apt-get install -y nano \
-&& apt-get install -y make \
-&& apt-get install -y gcc
+# TODO::
+# Look into buildkit for more secure way to store secrets 
 
 ARG username
 ARG password
+RUN sed -i -r -e "s/;\sstream_authentication\\ username:password/stream_authentication\\ ${username}:${password}/g"  /etc/motion/motion.conf
 
-RUN sed -i -r -e "s/daemon\\ off/daemon\\ on/g ; s/;logfile/logfile/g ; s/width\\ 320/width\\ 1024/g ; s/height\\ 240/height\\ 768/g ; s/webcontrol_port\\ 0/webcontrol_port\\ 8081/g ; s/;\\ webcontrol_authentication\\ username:password/webcontrol_authentication\\ ${username}:${password}/g"  /etc/motion/motion.conf
-
-CMD tail -f /dev/null
-
-
-#v4l2-ctl --list-devices
-
-# TODO::
-
-# Find a way to keep the docker container running with both noip and motion processes
-# Find a way to pass usb device in either using privilege or device flags
+VOLUME /mnt/motion
+EXPOSE 8081
+ENTRYPOINT ["motion"]
