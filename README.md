@@ -14,19 +14,23 @@ The v4l2-ctl utility is installed to verify the camera setup.
 Building the Image
 Build the Docker image using the following command:
 
-```DOCKER_BUILDKIT=1 docker buildx build --push \
+```
+DOCKER_BUILDKIT=1 docker buildx build --push \
   -t granthouston44/motion:motionrpi \
   --platform linux/arm/v7 .
-This command builds and pushes the image to your Docker Hub repository.
 ```
+This command builds and pushes the image to your Docker Hub repository.
+
 Running the Container
 Run the container with the following command:
 
 
-```docker run --device /dev/video0:/dev/video0 -p 80:80 \
+```
+docker run --device /dev/video0:/dev/video0 -p 80:80 \
   -e NOIP_USERNAME='email' -e NOIP_PASSWORD='password' \
   -e MOTION_USERNAME='user' -e MOTION_PASSWORD='pass' \
-  -d granthouston44/motion:motionrpi```
+  -d granthouston44/motion:motionrpi
+```
 Replace email, password, user, and pass with your actual No-IP credentials and Motion web interface credentials, respectively.
 
 Camera Module Setup on Raspberry Pi
@@ -37,7 +41,8 @@ Install v4l-utils:
 Update your package list and install v4l-utils:
 
 
-```sudo apt-get update
+```
+sudo apt-get update
 sudo apt-get install v4l-utils
 ```
 Verify Camera Installation:
@@ -55,14 +60,17 @@ Load Camera Drivers:
 Load the bcm2835-v4l2 driver to ensure the camera is accessible:
 
 
-```sudo modprobe bcm2835-v4l2
-echo "bcm2835-v4l2" | sudo tee -a /etc/modules```
+```
+sudo modprobe bcm2835-v4l2
+echo "bcm2835-v4l2" | sudo tee -a /etc/modules
+```
 Enable Camera Hardware:
 
 Run raspi-config to enable the camera interface:
 
 
-```sudo raspi-config
+```
+sudo raspi-config
 ```
 Go to Interfacing Options, select Camera, and enable it. Reboot your Raspberry Pi afterward.
 
@@ -81,7 +89,8 @@ Check Camera in Container:
 After the container starts, verify that /dev/video0 is accessible:
 
 
-```docker exec <container_name_or_id> ls -l /dev/video0
+```
+docker exec <container_name_or_id> ls -l /dev/video0
 ```
 This ensures that the camera device is correctly passed through to the container.
 
