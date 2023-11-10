@@ -1,26 +1,40 @@
-FROM raspbian/stretch:latest as base-image
+# syntax=docker/dockerfile:1.0.0-experimental
 
-RUN apt-get -y update && apt-get -y install motion && apt-get -y install make && apt-get -y install gcc \
-&& mkdir -p /var/lib/noip
+FROM dtcooper/raspberrypi-os:bullseye
 
-WORKDIR /var/lib/noip/
-RUN --mount=type=secret,id=noip noip_creds="$(cat /run/secrets/noip_creds)" \
-    && wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz \
-    && mkdir noip_ && tar xfvz noip-duc-linux.tar.gz -C noip_ --strip-components 1 \
-    && echo '/usr/local/bin/noip2' >> /etc/rc.local \
-    && cd ./noip_ make install
+# Install motion and other necessary packages
+RUN apt-get update && \
+    apt-get install -y \
+    motion \
+    make \
+    gcc \
+    wget \
+    expect \
+    procps \
+    vim
 
-# TODO::
-# Find way to run 'make install' and pass values into the prompt
+# Clean up the apt cache to reduce image size
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Download No-IP client, unpack it and prepare it for runtime installation
+RUN wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz \
+    && mkdir -p /usr/local/src/noip \
+    && tar xfvz noip-duc-linux.tar.gz -C /usr/local/src/noip --strip-components=1 \
+    && rm noip-duc-linux.tar.gz
+
+# Copy the expect script and entrypoint script to the image
+COPY configure-noip.expect /usr/local/src/noip/configure-noip.expect
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /usr/local/src/noip/configure-noip.expect \
+    && chmod +x /entrypoint.sh
+
+# Copy your motion configuration
 COPY motion.conf /etc/motion/motion.conf
 
-# TODO::
-# Look into buildkit for more secure way to store secrets 
-
-RUN --mount=type=secret,id=auth_creds auth_creds="$(cat /run/secrets/auth_creds)" \
-&& sed -i -r -e "s/;\sstream_authentication\\ username:password/stream_authentication\\ ${auth_creds}/g"  /etc/motion/motion.conf
-
+# Set up a volume for data persistence
 VOLUME /mnt/motion
+
+# Expose the port motion listens to
 EXPOSE 8081
-ENTRYPOINT ["motion"]
+
+ENTRYPOINT ["/entrypoint.sh"]

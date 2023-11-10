@@ -1,0 +1,34 @@
+#!/usr/bin/expect -f
+
+# Set timeout to a large number to avoid timing out during the configuration
+set timeout -1
+
+# Get username and password from the command line arguments
+set username [lindex $argv 0]
+set password [lindex $argv 1]
+
+# Change to the directory with the noip source
+cd /usr/local/src/noip
+
+# Run make install
+spawn make install
+expect "Auto configuration for Linux client of no-ip.com."
+
+# Interact with the configuration prompts immediately following make install
+expect "Please enter the login/email string for no-ip.com" {
+    send -- "$username\r"
+}
+expect "Please enter the password for user '$username'" {
+    send -- "$password\r"
+}
+expect -exact "Please enter an update interval:\[30\] " {
+    send -- "30\r"
+}
+expect -exact "Do you wish to run something at successful update?\[N\] (y/N) " {
+    send -- "n\r"
+}
+expect "New configuration file '/tmp/no-ip2.conf' created." {
+    # The configuration file is created; proceed with moving the file
+}
+
+expect eof
