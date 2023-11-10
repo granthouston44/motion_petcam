@@ -22,6 +22,44 @@ DOCKER_BUILDKIT=1 docker buildx build --push \
 This command builds and pushes the image to your Docker Hub repository.
 
 Running the Container
+
+Automated Setup with Script
+As an alternative to manual setup, you can use the provided script to prepare your Raspberry Pi and install Docker. This script will enable the camera interface, install necessary tools, load kernel modules, and add your user to the required groups.
+
+Using the Setup Script
+Clone the Repository:
+Clone the repository to your Raspberry Pi:
+
+sh
+Copy code
+git clone https://github.com/yourusername/yourrepository.git
+Run the Setup Script:
+Change to the cloned directory, make the script executable, and run it:
+
+sh
+Copy code
+cd yourrepository
+chmod +x setup_camera_docker.sh
+./setup_camera_docker.sh
+This script will perform all necessary actions to set up the camera and Docker.
+
+Reboot the Raspberry Pi:
+After the script has finished, reboot your Raspberry Pi to ensure all changes take effect:
+
+sh
+Copy code
+sudo reboot
+Pull the Docker Image (Optional):
+If you also want the script to pull the Docker image, append these lines to the end of the setup_camera_docker.sh script:
+
+sh
+Copy code
+echo "Pulling the Motion Docker image..."
+docker pull granthouston44/motion:motionrpi
+Now, when you run the script, it will also download the latest version of your Docker image.
+
+Please note that the script requires an internet connection to download and install packages. Ensure that your Raspberry Pi is connected to the internet before running the script.
+
 Run the container with the following command:
 
 
