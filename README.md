@@ -1,7 +1,7 @@
 Motion Docker Image for Raspberry Pi
 This Docker image is designed to run the Motion video surveillance software on a Raspberry Pi, using a connected camera device and integrating with No-IP for Dynamic DNS support.
 
-Features
+Features:
 Runs on Raspberry Pi with ARMv7 architecture.
 Integrates with No-IP for dynamic DNS service.
 Streams video from a connected camera.
@@ -30,32 +30,31 @@ Using the Setup Script
 Clone the Repository:
 Clone the repository to your Raspberry Pi:
 
-sh
-Copy code
-git clone https://github.com/yourusername/yourrepository.git
+
 Run the Setup Script:
 Change to the cloned directory, make the script executable, and run it:
-
-sh
-Copy code
-cd yourrepository
+```
+cd motion_petcam
 chmod +x setup_camera_docker.sh
 ./setup_camera_docker.sh
+```
 This script will perform all necessary actions to set up the camera and Docker.
 
 Reboot the Raspberry Pi:
 After the script has finished, reboot your Raspberry Pi to ensure all changes take effect:
 
-sh
-Copy code
+```
 sudo reboot
 Pull the Docker Image (Optional):
+```
+
 If you also want the script to pull the Docker image, append these lines to the end of the setup_camera_docker.sh script:
 
-sh
-Copy code
+```
 echo "Pulling the Motion Docker image..."
 docker pull granthouston44/motion:motionrpi
+```
+
 Now, when you run the script, it will also download the latest version of your Docker image.
 
 Please note that the script requires an internet connection to download and install packages. Ensure that your Raspberry Pi is connected to the internet before running the script.
@@ -64,7 +63,7 @@ Run the container with the following command:
 
 
 ```
-docker run --device /dev/video0:/dev/video0 -p 80:80 \
+docker run --device /dev/video0:/dev/video0 -p 8081:8081 \
   -e NOIP_USERNAME='email' -e NOIP_PASSWORD='password' \
   -e MOTION_USERNAME='user' -e MOTION_PASSWORD='pass' \
   -d granthouston44/motion:motionrpi
