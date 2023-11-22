@@ -31,9 +31,6 @@ RUN chmod +x /usr/local/src/noip/configure-noip.expect \
 # Copy your motion configuration
 COPY motion.conf /etc/motion/motion.conf
 
-# Set up a volume for data persistence
-VOLUME /mnt/motion
-
 # Expose the port motion listens to
 EXPOSE 8081
 
