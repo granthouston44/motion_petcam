@@ -13,4 +13,5 @@ VOLUME /mnt/letsencrypt/
 EXPOSE 80 443
 
 # Start Nginx when the container launches
-CMD ["nginx", "-g", "daemon off;"]
+# CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh"]
