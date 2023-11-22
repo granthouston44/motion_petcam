@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  motion:
+    build: 
+      context: ./Dockerfiles/motion/Dockerfile
+    ports:
+      - "8081:8081"
+  nginx:
+    build: 
+      context: ./Dockerfiles/nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/domain:/mnt/letsencrypt  # Mounting the SSL certificates
+    restart: unless-stopped
