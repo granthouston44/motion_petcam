@@ -11,5 +11,5 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt/live/domain:/mnt/letsencrypt  # Mounting the SSL certificates
+      - /etc/letsencrypt/live/domain:/mnt/letsencrypt/  # Mounting the SSL certificates
     restart: unless-stopped

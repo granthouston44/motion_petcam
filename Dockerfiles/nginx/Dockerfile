@@ -7,7 +7,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy the custom Nginx configuration file into the container
 COPY nginx.conf /etc/nginx/conf.d/
 
-VOLUME /mnt/nginx/
+VOLUME /mnt/letsencrypt/
 
 # Expose ports for HTTP and HTTPS
 EXPOSE 80 443
