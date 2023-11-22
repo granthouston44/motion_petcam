@@ -2,13 +2,11 @@ version: '3'
 
 services:
   motion:
-    build: 
-      context: ./Dockerfiles/motion/Dockerfile
+    image: granthouston44/motion:motionrpi  # Replace with your actual Motion Docker image
     ports:
       - "8081:8081"
   nginx:
-    build: 
-      context: ./Dockerfiles/nginx/Dockerfile
+    image: granthouston44/nginx:revproxy
     ports:
       - "80:80"
       - "443:443"
