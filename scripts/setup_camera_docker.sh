@@ -33,7 +33,7 @@ fi
 echo "Installing Docker Compose..."
 sudo apt-get install -y python3-pip libffi-dev
 check_status "Dependency installation for Docker Compose"
-sudo pip3 install docker-compose
+sudo apt install docker-compose
 check_status "Docker Compose installation"
 
 # Install v4l2-utils if not already installed
