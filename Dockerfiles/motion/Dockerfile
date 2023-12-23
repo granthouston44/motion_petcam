@@ -11,7 +11,8 @@ RUN apt-get update && \
     wget \
     expect \
     procps \
-    vim
+    vim \ 
+    curl
 
 # Clean up the apt cache to reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
