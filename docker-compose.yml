@@ -14,19 +14,20 @@ services:
       - "/dev/video0:/dev/video0"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/0/detection/connection || exit 1"]
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 1m
   nginx:
     image: granthouston44/nginx:revproxy
     depends_on:
-      - motion
+      motion:
+        condition: service_healthy            
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/letsencrypt/live/domain:/mnt/letsencrypt/ # Mounting the SSL certificates
+      - /etc/letsencrypt/live/yourdomain:/mnt/letsencrypt/ # Mounting the SSL certificates
       - /host/path/nginx.conf:/etc/nginx/nginx.conf:ro  
     restart: unless-stopped
