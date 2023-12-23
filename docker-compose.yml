@@ -5,6 +5,14 @@ services:
     image: granthouston44/motion:motionrpi  # Replace with your actual Motion Docker image
     ports:
       - "8081:8081"
+    environment:
+      NOIP_USERNAME: ${NOIP_USERNAME}
+      NOIP_PASSWORD: ${NOIP_PASSWORD}
+      MOTION_USERNAME: ${MOTION_USERNAME}
+      MOTION_PASSWORD: ${MOTION_PASSWORD}
+    devices:
+      - "/dev/video0:/dev/video0"
+    restart: unless-stopped
   nginx:
     image: granthouston44/nginx:revproxy
     ports:
