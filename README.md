@@ -1,37 +1,41 @@
-Motion Docker Image for Raspberry Pi
+# Motion Docker Image for Raspberry Pi
 This Docker image is designed to run the Motion video surveillance software on a Raspberry Pi, using a connected camera device. It integrates with No-IP for Dynamic DNS support and can be configured to use HTTPS via Nginx and Certbot for secure video streaming.
 
-Features
-Runs on Raspberry Pi with ARMv7 architecture.
-Integrates with No-IP for dynamic DNS service.
-Streams video from a connected camera.
-Supports HTTPS using Nginx and Let's Encrypt SSL certificates.
-Prerequisites
+## Features
+- Runs on Raspberry Pi with ARMv7 architecture.
+- Integrates with No-IP for dynamic DNS service.
+- Streams video from a connected camera.
+- Supports HTTPS using Nginx and Let's Encrypt SSL certificates.
+
+## Prerequisites
 Before using this Docker image, ensure that:
 
-The Raspberry Pi OS is up to date.
-The camera is connected to the Raspberry Pi.
-The v4l2-ctl utility is installed to verify the camera setup.
+- The Raspberry Pi OS is up to date.
+- The camera is connected to the Raspberry Pi.
+- The v4l2-ctl utility is installed to verify the camera setup.
 
-Building the Image
-*You can also pull the docker image directly - check further down for the dockerhub command*
+## Building the Image
+<sup> You can also pull the docker image directly - check further down for the dockerhub command </sup>
 
 Build the Docker motion image using the following command (make sure you're in the same dir as the motion dockerfile):
 
-```DOCKER_BUILDKIT=1 docker buildx build --push \
+```
+DOCKER_BUILDKIT=1 docker buildx build --push \
   -t granthouston44/motion:motionrpi \
-  --platform linux/arm/v7 .```
+  --platform linux/arm/v7 .
+```
 
 This command builds and pushes the image to your Docker Hub repository.
 
-Running the Container with Docker Compose
-Docker Compose Setup
+## Running the Container with Docker Compose
+### Docker Compose Setup
 To facilitate the setup, use Docker Compose which manages the Motion service and an Nginx reverse proxy for SSL termination.
 
-Docker Compose File
+### Docker Compose File
 Edit the docker-compose.yml file with the following content:
 
-```version: '3'
+```
+version: '3'
 services:
   motion:
     image: granthouston44/motion:motionrpi
@@ -54,25 +58,27 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/mnt/letsencrypt
     depends_on:
-      - motion```
+      - motion
+```
 Replace the necessary environment variables with your actual No-IP and Motion credentials.
 
-Nginx Configuration
+### Nginx Configuration
 Edit the nginx.conf file with the appropriate reverse proxy settings and SSL configurations.
 
-Running with Docker Compose
+### Running with Docker Compose
 Run the following command in the directory containing your docker-compose.yml:
 
 ```
 docker-compose up -d
 ```
-SSL Certificate Setup with Certbot
+
+### SSL Certificate Setup with Certbot
 To enable HTTPS, you'll need to generate SSL certificates using Certbot.
 
-Certbot Script
+### Certbot Script
 Use the provided certbot_script.sh to automatically obtain and renew Let's Encrypt certificates.
 
-Running Certbot Script
+### Running Certbot Script
 Execute the script to set up SSL certificates:
 
 ```
@@ -81,18 +87,17 @@ chmod +x certbot_script.sh
 ```
 This script will handle the certificate setup and ensure that they are renewed automatically.
 
-Updating Docker Compose and Nginx Configuration
+### Updating Docker Compose and Nginx Configuration
 After obtaining the certificates, ensure the Docker Compose and Nginx configurations are set to use the certificates located in /etc/letsencrypt/live/yourdomain.com/.
 
-Automated Pi Setup with Script
+## Automated Pi Setup with Script
 Use the provided script to prepare your Raspberry Pi and install Docker. This script will enable the camera interface, install necessary tools, load kernel modules, and add your user to the required groups.
 
-Using the Setup Script
-Clone the Repository:
+### Using the Setup Script
 Clone the repository to your Raspberry Pi:
 
 
-Run the Setup Script:
+### Run the Setup Script:
 Change to the cloned directory, make the script executable, and run it:
 ```
 cd motion_petcam
@@ -101,7 +106,7 @@ chmod +x setup_camera_docker.sh
 ```
 This script will perform all necessary actions to set up the camera and Docker.
 
-Reboot the Raspberry Pi:
+### Reboot the Raspberry Pi:
 After the script has finished, reboot your Raspberry Pi to ensure all changes take effect:
 
 ```
@@ -130,7 +135,7 @@ docker run --device /dev/video0:/dev/video0 -p 8081:8081 \
   -d granthouston44/motion:motionrpi
 ```
 
-Manual Pi Camera Setup:
+## Manual Pi Camera Setup:
 
 Camera Module Setup on Raspberry Pi
 To set up the camera module on your Raspberry Pi, follow these steps:
