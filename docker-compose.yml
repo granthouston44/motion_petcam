@@ -15,7 +15,7 @@ services:
       - "/dev/video0:/dev/video0"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8081/0/detection/connection || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/0/detection/connection || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -32,6 +32,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /etc/letsencrypt:/mnt/letsencrypt
     restart: unless-stopped
