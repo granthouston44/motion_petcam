@@ -36,4 +36,5 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /etc/letsencrypt:/mnt/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     restart: unless-stopped
