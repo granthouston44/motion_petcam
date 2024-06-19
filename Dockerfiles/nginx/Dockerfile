@@ -1,5 +1,5 @@
 # Use the official Nginx image compatible with ARM architecture
-FROM arm32v7/nginx:latest as builder
+FROM arm64v8/nginx:latest as builder
 
 # Remove the default Nginx configuration file
 RUN rm /etc/nginx/conf.d/default.conf
@@ -14,7 +14,7 @@ ARG DOMAIN_NAME
 RUN sed -e "s/\${DOMAIN_NAME}/$DOMAIN_NAME/g" /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/nginx.conf
 
 # Second stage
-FROM arm32v7/nginx:latest
+FROM arm64v8/nginx:latest
 
 # Copy the processed configuration file from the builder stage
 COPY --from=builder /etc/nginx/conf.d/nginx.conf /etc/nginx/conf.d/nginx.conf
