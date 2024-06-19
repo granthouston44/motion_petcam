@@ -23,7 +23,7 @@ services:
 
   nginx:
     build:
-      context: .
+      context: ./Dockerfiles/nginx
       args:
         DOMAIN_NAME: ${DOMAIN_NAME}
     depends_on:
