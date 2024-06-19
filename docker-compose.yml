@@ -32,8 +32,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /etc/letsencrypt:/mnt/letsencrypt
     restart: unless-stopped

@@ -1,23 +1,20 @@
-# Use the official Nginx image compatible with ARM architecture
-FROM arm64v8/nginx:latest as builder
+# Use the official Nginx image compatible with ARM64 architecture
+FROM arm64v8/nginx:latest
 
 # Remove the default Nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/nginx.conf
 
-# Copy the custom Nginx configuration template into the container
-COPY nginx.conf.template /etc/nginx/conf.d/nginx.conf.template
+# Create the directory for ACME challenge files
+RUN mkdir -p /var/www/certbot && chown www-data:www-data /var/www/certbot
+
+# Copy the Nginx configuration template into the container
+COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
 # Environment variables for substitution
 ARG DOMAIN_NAME
 
-# Substitute environment variables in the Nginx configuration template
-RUN sed -e "s/\${DOMAIN_NAME}/$DOMAIN_NAME/g" /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/nginx.conf
-
-# Second stage
-FROM arm64v8/nginx:latest
-
-# Copy the processed configuration file from the builder stage
-COPY --from=builder /etc/nginx/conf.d/nginx.conf /etc/nginx/conf.d/nginx.conf
+# Substitute environment variables in the Nginx configuration template using sed
+RUN sed -e "s/\${DOMAIN_NAME}/$DOMAIN_NAME/g" /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # Expose ports for HTTP and HTTPS
 EXPOSE 80 443
