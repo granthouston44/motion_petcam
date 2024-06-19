@@ -10,24 +10,30 @@ services:
       NOIP_PASSWORD: ${NOIP_PASSWORD}
       MOTION_USERNAME: ${MOTION_USERNAME}
       MOTION_PASSWORD: ${MOTION_PASSWORD}
+      DOMAIN_NAME: ${DOMAIN_NAME}
     devices:
       - "/dev/video0:/dev/video0"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8080/0/detection/connection || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/0/detection/connection || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 1m
+
   nginx:
-    image: granthouston44/nginx:revproxy
+    build:
+      context: .
+      args:
+        DOMAIN_NAME: ${DOMAIN_NAME}
     depends_on:
       motion:
         condition: service_healthy
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /etc/letsencrypt:/mnt/letsencrypt
-      - /host/path/to/nginx.conf:/etc/nginx/nginx.conf:ro  
     restart: unless-stopped
